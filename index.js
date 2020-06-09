@@ -16,7 +16,7 @@ io.on('connection', (socket)=>{
     socket.on('join', (name, callback)=>{
         users[socket.id] = name;
         io.emit('message', {user:'admin', text : `${name}, joined the chat.`}); // message to every one, including sender.
-        io.emit('usersCount', Object.keys(users).length)
+        io.emit('usersList', Object.values(users))
         callback(); 
     });
 
