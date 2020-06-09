@@ -21,27 +21,39 @@ io.on('connection', (socket)=>{
     });
 
     socket.on('send', (messageObj, callback)=>{
-        io.emit('message', {user: messageObj.user , text : messageObj.text}); 
+        if(Object.keys(users).length > 1){
+            io.emit('message', {user: messageObj.user , text : messageObj.text}); 
+        } else {
+            io.emit('message', {user: 'admin' , text : "Currently no one has joined the chat room, Please wait for others to join."});
+        }
         //callback();
     });
 
     socket.on('exit', (name, callback)=>{
         io.emit('message', {user:'admin', text : `${users[socket.id]}, has left the chat.`}); 
+
         if(users[socket.id] === 'rkant225'){
-            io.emit('usersCount', 0)
-            io.emit('message', {user:'admin', text : `Admin has removed all the users and, disabled the chat box. Please close the chat box and join the chat again, also ask your friends to do so.`});
+            io.emit('usersList', [])
+            io.emit('message', {user:'admin', text : `Admin has removed all the users and. Please close the chat box and join the chat again, also ask your friends to do so.`});
             users = {};
+         }else {
+            delete users[socket.id];
+            io.emit('usersList', Object.values(users));
         }
     })
 
     socket.on('disconnect', (name, callback)=>{
-
         io.emit('message', {user:'admin', text : `${users[socket.id]}, has left the chat.`}); 
+        
         if(users[socket.id] === 'rkant225'){
-            io.emit('usersCount', 0)
-            io.emit('message', {user:'admin', text : `Admin has removed all the users and, disabled the chat box. Please close the chat box and join the chat again, also ask your friends to do so.`});
+            io.emit('usersList', [])
+            io.emit('message', {user:'admin', text : `Admin has removed all the users and. Please close the chat box and join the chat again, also ask your friends to do so.`});
             users = {};
+        } else {
+            delete users[socket.id];
+            io.emit('usersList', Object.values(users));
         }
+
 
     })
 })
