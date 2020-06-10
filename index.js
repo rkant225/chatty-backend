@@ -30,7 +30,8 @@ io.on('connection', (socket)=>{
     });
 
     socket.on('exit', (name, callback)=>{
-        io.emit('message', {user:'admin', text : `${users[socket.id]}, has left the chat.`}); 
+        const adminMsg = users[socket.id] ? `${users[socket.id]}, has left the chat.` : `Someone, has left the chat. This may be false message, we are working on it.`;
+        io.emit('message', {user:'admin', text : adminMsg}); 
 
         if(users[socket.id] === 'rkant225'){
             io.emit('usersList', [])
@@ -43,7 +44,8 @@ io.on('connection', (socket)=>{
     })
 
     socket.on('disconnect', (name, callback)=>{
-        io.emit('message', {user:'admin', text : `${users[socket.id]}, has left the chat.`}); 
+        const adminMsg = users[socket.id] ? `${users[socket.id]}, has left the chat.` : `Someone, has left the chat. This may be false message, we are working on it.`;
+        io.emit('message', {user:'admin', text : adminMsg}); 
         
         if(users[socket.id] === 'rkant225'){
             io.emit('usersList', [])
